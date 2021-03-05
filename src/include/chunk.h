@@ -7,6 +7,7 @@
 typedef enum {
     OP_RETURN,
     OP_CONSTANT,
+    OP_CONSTANT_LONG,
 } OPCODE;
 
 typedef struct {
@@ -17,9 +18,11 @@ typedef struct {
     ValueArray constants;
 } Chunk;
 
-void init_chunk  (Chunk* chunk);
-void write_chunk (Chunk* chunk, uint8_t byte, int line);
-int  add_constant(Chunk* chunk, Value value);
-void free_chunk  (Chunk* chunk);
+void init_chunk (Chunk* chunk);
+void write_chunk(Chunk* chunk, uint8_t byte, int line);
+void free_chunk (Chunk* chunk);
+
+int add_constant(Chunk* chunk, Value value);
+void write_constant(Chunk* chunk, Value value, int line);
 
 #endif

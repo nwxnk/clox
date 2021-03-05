@@ -24,14 +24,28 @@ void write_chunk(Chunk* chunk, uint8_t byte, int line) {
     chunk->count++;
 }
 
-int add_constant(Chunk* chunk, Value value) {
-    write_value_array(&chunk->constants, value);
-    return chunk->constants.count - 1;
-}
-
 void free_chunk(Chunk* chunk) {
     FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
     FREE_ARRAY(int, chunk->lines, chunk->capacity);
     free_value_array(&chunk->constants);
     init_chunk(chunk);
+}
+
+int add_constant(Chunk* chunk, Value value) {
+    write_value_array(&chunk->constants, value);
+    return chunk->constants.count - 1;
+}
+
+void write_constant(Chunk* chunk, Value value, int line) {
+    int index = add_constant(chunk, value);
+
+    if (index <= 0xff) {
+        write_chunk(chunk, OP_CONSTANT, line);
+        write_chunk(chunk, index, line);
+    } else {
+        write_chunk(chunk, OP_CONSTANT_LONG, line);
+        write_chunk(chunk, index >> 16 & 0xff, line);
+        write_chunk(chunk, index >> 8  & 0xff, line);
+        write_chunk(chunk, index >> 0  & 0xff, line);
+    }
 }

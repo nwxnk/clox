@@ -6,8 +6,9 @@ int main(int argc, char** argv) {
     Chunk chunk;
     init_chunk(&chunk);
 
-    write_chunk(&chunk, OP_CONSTANT, 0);
-    write_chunk(&chunk, add_constant(&chunk, 1.2), 0);
+    for (int i = 0; i < 0xff + 2; i++) {
+        write_constant(&chunk, i, 0);
+    }
     write_chunk(&chunk, OP_RETURN, 1);
 
     disassemble_chunk(&chunk, "test chunk");
