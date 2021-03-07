@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
 
     write_constant(&chunk, 2.78, 0);
     write_constant(&chunk, 3.14, 1);
+    write_chunk(&chunk, OP_NEGATE, 1);
     write_chunk(&chunk, OP_RETURN, 2);
 
     interpret(&chunk);

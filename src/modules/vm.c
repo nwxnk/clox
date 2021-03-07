@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "chunk.h"
 #include "debug.h"
 #include "common.h"
 #include "value.h"
@@ -53,6 +54,10 @@ static InterpreterResult run() {
         switch(instruction = READ_BYTE()) {
             case OP_RETURN:
                 return INTERPRETER_OK;
+            case OP_NEGATE: {
+                push_stack(-pop_stack());
+                break;
+            }
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
                 push_stack(constant);

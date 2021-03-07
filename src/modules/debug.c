@@ -1,3 +1,4 @@
+#include "chunk.h"
 #include "value.h"
 #include "debug.h"
 #include <stdio.h>
@@ -45,6 +46,8 @@ int disassemble_instruction(Chunk* chunk, int offset) {
     switch (chunk->code[offset]) {
         case OP_RETURN:
             return simple_instruction("OP_RETURN", offset);
+        case OP_NEGATE:
+            return simple_instruction("OP_NEGATE", offset);
         case OP_CONSTANT:
             return constant_instruction("OP_CONSTANT", chunk, offset);
         case OP_CONSTANT_LONG:
