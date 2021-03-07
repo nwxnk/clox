@@ -5,6 +5,10 @@
 #include "common.h"
 
 typedef enum {
+    OP_ADD,
+    OP_SUBTRACT,
+    OP_DIVIDE,
+    OP_MULTIPLY,
     OP_RETURN,
     OP_NEGATE,
     OP_CONSTANT,

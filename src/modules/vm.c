@@ -38,6 +38,13 @@ static InterpreterResult run() {
     READ_BYTE() <<  8 | \
     READ_BYTE() <<  0])
 
+#define BINARY_OP(op) \
+    do {\
+        Value b = pop_stack(); \
+        Value a = pop_stack(); \
+        push_stack(a op b); \
+    } while (false)
+
     uint8_t instruction;
     for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
@@ -52,8 +59,13 @@ static InterpreterResult run() {
         disassemble_instruction(vm.chunk, (int) (vm.ip - vm.chunk->code));
 #endif
         switch(instruction = READ_BYTE()) {
-            case OP_RETURN:
+            case OP_ADD: BINARY_OP(+); break;
+            case OP_SUBTRACT: BINARY_OP(-); break;
+            case OP_DIVIDE: BINARY_OP(/); break;
+            case OP_MULTIPLY: BINARY_OP(*); break;
+            case OP_RETURN: {
                 return INTERPRETER_OK;
+            }
             case OP_NEGATE: {
                 push_stack(-pop_stack());
                 break;
@@ -70,6 +82,8 @@ static InterpreterResult run() {
             }
         }
     }
+
+#undef BINARY_OP
 
 #undef READ_LONG_CONSTANT
 #undef READ_CONSTANT
