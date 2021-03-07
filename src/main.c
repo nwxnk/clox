@@ -8,10 +8,10 @@ int main(int argc, char** argv) {
     init_vm();
     init_chunk(&chunk);
 
-    for (int i = 0; i < 0xff + 2; i++) {
-        write_constant(&chunk, i, 0);
-    }
-    write_chunk(&chunk, OP_RETURN, 1);
+    write_constant(&chunk, 2.78, 0);
+    write_constant(&chunk, 3.14, 1);
+    write_chunk(&chunk, OP_RETURN, 2);
+
     interpret(&chunk);
 
     free_chunk(&chunk);

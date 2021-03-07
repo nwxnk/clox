@@ -1,17 +1,32 @@
 #include "vm.h"
 #include "debug.h"
 #include "common.h"
+#include "value.h"
 
 #include <stdio.h>
 
 VM vm;
 
-void init_vm() {
+static void reset_stack() {
+    vm.sp = vm.stack;
+}
 
+void init_vm() {
+    reset_stack();
 }
 
 void free_vm() {
 
+}
+
+void push_stack(Value value) {
+    *vm.sp = value;
+    vm.sp++;
+}
+
+Value pop_stack() {
+    vm.sp--;
+    return *vm.sp;
 }
 
 static InterpreterResult run() {
@@ -25,6 +40,14 @@ static InterpreterResult run() {
     uint8_t instruction;
     for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
+        if (vm.sp != vm.stack) {
+            printf("        [");
+            for (Value* slot = vm.stack; slot < vm.sp; slot++) {
+                print_value(*slot);
+                printf(", ");
+            }
+            printf("\b\b]\n");
+        }
         disassemble_instruction(vm.chunk, (int) (vm.ip - vm.chunk->code));
 #endif
         switch(instruction = READ_BYTE()) {
@@ -32,14 +55,12 @@ static InterpreterResult run() {
                 return INTERPRETER_OK;
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
-                print_value(constant);
-                printf("\n");
+                push_stack(constant);
                 break;
             }
             case OP_CONSTANT_LONG: {
                 Value constant = READ_LONG_CONSTANT();
-                print_value(constant);
-                printf("\n");
+                push_stack(constant);
                 break;                
             }
         }
