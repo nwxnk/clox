@@ -26,6 +26,6 @@ void free_vm();
 void push_stack(Value value);
 Value pop_stack();
 
-InterpreterResult interpret(Chunk* chunk);
+InterpreterResult interpret(const char* source);
 
 #endif
