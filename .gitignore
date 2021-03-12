@@ -51,6 +51,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+.vscode
 build
 Makefile
 compile_commands.json
