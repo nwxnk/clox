@@ -183,7 +183,7 @@ Token scan_token() {
         case '}': return make_token(TOKEN_RIGHT_BRACE);
         case ',': return make_token(TOKEN_COMMA);
         case '.': return make_token(TOKEN_DOT);
-        case ';': return make_token(TOKEN_SEMI_COLON);
+        case ';': return make_token(TOKEN_SEMICOLON);
         case '+': return make_token(TOKEN_PLUS);
         case '-': return make_token(TOKEN_MINUS);
         case '/': return make_token(TOKEN_SLASH);
