@@ -64,9 +64,7 @@ static InterpreterResult run() {
             case OP_SUBTRACT: BINARY_OP(-); break;
             case OP_DIVIDE: BINARY_OP(/); break;
             case OP_MULTIPLY: BINARY_OP(*); break;
-            case OP_RETURN: {
-                return INTERPRETER_OK;
-            }
+
             case OP_NEGATE: {
                 push_stack(-pop_stack());
                 break;
@@ -81,6 +79,9 @@ static InterpreterResult run() {
                 push_stack(constant);
                 break;                
             }
+            case OP_RETURN: {
+                return INTERPRETER_OK;
+            }
         }
     }
 
@@ -92,6 +93,19 @@ static InterpreterResult run() {
 }
 
 InterpreterResult interpret(const char* source) {
-    compile(source);
-    return INTERPRETER_OK;
+    Chunk chunk;
+    init_chunk(&chunk);
+
+    if (!compile(source, &chunk)) {
+        free_chunk(&chunk);
+        return INTERPRETER_COMPILE_ERROR;
+    }
+
+    vm.chunk = &chunk;
+    vm.ip = vm.chunk->code;
+
+    InterpreterResult result = run();
+
+    free_chunk(&chunk);
+    return result;
 }
