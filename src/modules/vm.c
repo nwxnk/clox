@@ -23,13 +23,11 @@ void free_vm() {
 }
 
 void push_stack(Value value) {
-    *vm.sp = value;
-    vm.sp++;
+    *(vm.sp++) = value;
 }
 
 Value pop_stack() {
-    vm.sp--;
-    return *vm.sp;
+    return *(--vm.sp);
 }
 
 static Value peek(int distance) {
@@ -58,11 +56,15 @@ static InterpreterResult run() {
     READ_BYTE() <<  8 | \
     READ_BYTE() <<  0])
 
-#define BINARY_OP(op) \
+#define BINARY_OP(value_type, op) \
     do {\
-        Value b = pop_stack(); \
-        Value a = pop_stack(); \
-        push_stack(a op b); \
+        if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
+            runtime_error("operands must be numbers"); \
+            return INTERPRETER_RUNTIME_ERROR; \
+        } \
+        double b = AS_NUMBER(pop_stack()); \
+        double a = AS_NUMBER(pop_stack()); \
+        push_stack(value_type(a op b)); \
     } while (false)
 
     uint8_t instruction;
@@ -79,13 +81,17 @@ static InterpreterResult run() {
         disassemble_instruction(vm.chunk, (int) (vm.ip - vm.chunk->code));
 #endif
         switch(instruction = READ_BYTE()) {
-            case OP_ADD: BINARY_OP(+); break;
-            case OP_SUBTRACT: BINARY_OP(-); break;
-            case OP_DIVIDE: BINARY_OP(/); break;
-            case OP_MULTIPLY: BINARY_OP(*); break;
+            case OP_ADD:      BINARY_OP(NUMBER_VAL, +); break;
+            case OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -); break;
+            case OP_DIVIDE:   BINARY_OP(NUMBER_VAL, /); break;
+            case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
 
             case OP_NEGATE: {
-                push_stack(-pop_stack());
+                if (!IS_NUMBER(peek(0))) {
+                    runtime_error("operand must be a number");
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+                push_stack(NUMBER_VAL(-AS_NUMBER(pop_stack())));
                 break;
             }
             case OP_CONSTANT: {
