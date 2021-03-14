@@ -44,8 +44,8 @@ int disassemble_instruction(Chunk* chunk, int offset) {
     }
 
     switch (chunk->code[offset]) {
-        case OP_RETURN:
-            return simple_instruction("OP_RETURN", offset);
+        case OP_NOT:
+            return simple_instruction("OP_NOT", offset);
         case OP_NIL:
             return simple_instruction("OP_NIL", offset);
         case OP_TRUE:
@@ -62,6 +62,8 @@ int disassemble_instruction(Chunk* chunk, int offset) {
             return simple_instruction("OP_DIVIDE", offset);
         case OP_MULTIPLY:
             return simple_instruction("OP_MULTIPLY", offset);
+        case OP_RETURN:
+            return simple_instruction("OP_RETURN", offset);
         case OP_CONSTANT:
             return constant_instruction("OP_CONSTANT", chunk, offset);
         case OP_CONSTANT_LONG:

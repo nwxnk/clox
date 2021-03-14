@@ -34,6 +34,10 @@ static Value peek(int distance) {
     return vm.sp[-1 - distance];
 }
 
+static bool is_falsey(Value value) {
+    return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
+
 static void runtime_error(const char* format, ...) {
     va_list args;
     va_start(args, format);
@@ -90,6 +94,10 @@ static InterpreterResult run() {
             case OP_DIVIDE:   BINARY_OP(NUMBER_VAL, /); break;
             case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
 
+            case OP_NOT: {
+                push_stack(BOOL_VAL(is_falsey(pop_stack())));
+                break;
+            }
             case OP_NEGATE: {
                 if (!IS_NUMBER(peek(0))) {
                     runtime_error("operand must be a number");

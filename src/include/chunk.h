@@ -5,6 +5,7 @@
 #include "common.h"
 
 typedef enum {
+    OP_NOT,
     OP_NIL,
     OP_TRUE,
     OP_FALSE,
