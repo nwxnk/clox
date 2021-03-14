@@ -81,6 +81,10 @@ static InterpreterResult run() {
         disassemble_instruction(vm.chunk, (int) (vm.ip - vm.chunk->code));
 #endif
         switch(instruction = READ_BYTE()) {
+            case OP_NIL:   push_stack(NIL_VAL); break;
+            case OP_TRUE:  push_stack(BOOL_VAL(true)); break;
+            case OP_FALSE: push_stack(BOOL_VAL(false)); break;
+
             case OP_ADD:      BINARY_OP(NUMBER_VAL, +); break;
             case OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -); break;
             case OP_DIVIDE:   BINARY_OP(NUMBER_VAL, /); break;
