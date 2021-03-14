@@ -6,6 +6,7 @@
 #include "compiler.h"
 
 #include <stdio.h>
+#include <stdarg.h>
 
 VM vm;
 
@@ -29,6 +30,24 @@ void push_stack(Value value) {
 Value pop_stack() {
     vm.sp--;
     return *vm.sp;
+}
+
+static Value peek(int distance) {
+    return vm.sp[-1 - distance];
+}
+
+static void runtime_error(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputs("\n", stderr);
+
+    size_t instruction = vm.ip - vm.chunk->code - 1;
+    int line = vm.chunk->lines[instruction];
+    fprintf(stderr, "[line %d] in script\n", line);
+
+    reset_stack();
 }
 
 static InterpreterResult run() {
