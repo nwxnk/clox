@@ -94,6 +94,13 @@ static InterpreterResult run() {
             case OP_DIVIDE:   BINARY_OP(NUMBER_VAL, /); break;
             case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
 
+            case OP_LESS:     BINARY_OP(NUMBER_VAL, <); break;
+            case OP_GREATER:  BINARY_OP(NUMBER_VAL, >); break;
+            case OP_EQUAL: {
+                push_stack(BOOL_VAL(values_equal(pop_stack(), pop_stack())));
+                break;
+            }
+
             case OP_NOT: {
                 push_stack(BOOL_VAL(is_falsey(pop_stack())));
                 break;
