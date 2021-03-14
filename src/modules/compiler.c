@@ -151,7 +151,7 @@ static void expression() {
 }
 
 static void number() {
-    emit_constant(strtod(parser.previous.start, NULL));
+    emit_constant(NUMBER_VAL(strtod(parser.previous.start, NULL)));
 }
 
 static void grouping() {
